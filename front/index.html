@@ -7,6 +7,21 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <h1 x-data="showsComponent" x-text="message"></h1>
+   <div x-data="showsComponent">
+        <template x-if="loading">
+            <p x-text="message"></p>
+        </template>
+
+        <template x-if="!loading">
+            <template x-for="show in shows" :key="show.id">
+            <div class="show">
+                <h2 x-text="show.title || show.original_title || show.slug"></h2>
+                <p x-text="show.description"></p>
+                <img :src="show.images.poster" alt="" x-show="show.images.poster">
+                <a :href="show.resource_url" target="_blank">Voir sur BetaSeries</a>
+            </div>
+        </template>
+    </div>
+
 </body>
 </html>

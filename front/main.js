@@ -10,11 +10,16 @@ document.addEventListener("alpine:init", () => {
   }));
 
   Alpine.data("showsComponent", () => ({
+    loading: true,
     message: "Chargement...",
+    shows: [],
     init() {
       fetch("http://localhost:8080/shows")
-        .then((res) => res.text())
-        .then((data) => (this.message = data))
+        .then((res) => res.json())
+        .then((data) => {
+          this.shows = data.shows;
+          this.loading = false;
+        })
         .catch((err) => (this.message = "Error fetching from back"));
     },
   }));
