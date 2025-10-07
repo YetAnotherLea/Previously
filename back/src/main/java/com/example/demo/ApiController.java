@@ -5,10 +5,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController
@@ -20,14 +26,6 @@ public class ApiController {
     @RequestMapping("/test")
     public String test() {
         return "Testing API controller!";
-    }
-
-    @GetMapping(value = "/callclienttest")
-    private String getTestClient() {
-        String uri = "http://localhost:8080/test";
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(uri, String.class);
-        return result;
     }
 
     @GetMapping(value = "/shows")
