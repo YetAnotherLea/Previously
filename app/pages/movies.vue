@@ -21,6 +21,24 @@ onMounted(async () => {
     const result = await res.json()
     movies.value = result.movies
 })
+
+onMounted(async () => {
+    const myHeaders = new Headers()
+    myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId)
+
+    const res = await fetch("https://api.betaseries.com/movies/search?page=10", {
+        method: "GET",
+        headers: myHeaders,
+    })
+
+    if (!res.ok) {
+        console.error('Erreur API :', res.status)
+        return
+    }
+
+    const result = await res.json()
+    movies.value = result.movies
+})
 </script>
 
 <template>
@@ -66,7 +84,8 @@ onMounted(async () => {
                 Pas d'image
                 </div>
                 <p class="font-semibold text-sm">{{ movie.title || 'Titre inconnu' }}</p>
-                <p class="text-gray-600 text-sm">({{ movie.production_year }})</p>
+                <p class="text-gray-600 text-sm">{{ movie.genres[0] }}</p>
+                <p class="text-gray-600 text-sm">{{ movie.notes.mean }}</p>
             </li>
     </ul>
     </div>

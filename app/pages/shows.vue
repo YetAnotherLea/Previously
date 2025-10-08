@@ -67,7 +67,8 @@ onMounted(async () => {
                 </div>
                 <p class="font-semibold text-sm">{{ show.title || 'Titre inconnu' }}</p>
                 <p class="text-gray-600 text-sm">({{ show.production_year }})</p>
-                <p class="text-gray-600 text-sm">({{ show.genres }})</p>
+                <p class="text-gray-600 text-sm">{{ show.genres }}</p>
+                <p class="text-gray-600 text-sm">{{ show.notes.mean }}</p>
             </li>
     </ul>
     </div>
