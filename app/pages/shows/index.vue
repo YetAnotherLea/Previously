@@ -1,5 +1,4 @@
 <script setup>
-
 const startOAuth = async () => {
   try {
     // 1. Appelons une fonction Nuxt serveur pour construire l'URL de connexion
@@ -18,14 +17,13 @@ const startOAuth = async () => {
 import { ref, onMounted } from 'vue'
 
 const config = useRuntimeConfig()
-const movies = ref([])
-
+const shows = ref([])
 
 onMounted(async () => {
     const myHeaders = new Headers()
     myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId)
 
-    const res = await fetch("https://api.betaseries.com/movies/search?page=10", {
+    const res = await fetch("https://api.betaseries.com/shows/search?page=10", {
         method: "GET",
         headers: myHeaders,
     })
@@ -36,7 +34,7 @@ onMounted(async () => {
     }
 
     const result = await res.json()
-    movies.value = result.movies
+    shows.value = result.shows
 })
 </script>
 
@@ -66,26 +64,29 @@ onMounted(async () => {
     </div>
 
     <div>
-        <h1>Liste des films</h1>
+        <h1>Liste des séries</h1>
         <ul class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <li
-                v-for="movie in movies"
-                :key="movie.id"
+                v-for="show in shows"
+                :key="show.id"
+                @click="$router.push(`/shows/${show.id}`)"
                 class="border rounded-lg shadow p-2 flex flex-col items-center text-center"
             >
                 <img
-                v-if="movie.poster"
-                :src="movie.poster"
-                :alt="movie.title"
+                v-if="show.images.poster"
+                :src="show.images.poster"
+                :alt="show.title"
                 class="w-40 h-60 object-cover rounded mb-2"
                 />
                 <div v-else class="w-40 h-60 bg-gray-200 flex items-center justify-center text-gray-500 text-sm mb-2">
                 Pas d'image
                 </div>
-                <p class="font-semibold text-sm">{{ movie.title || 'Titre inconnu' }}</p>
-                <p class="text-gray-600 text-sm">{{ movie.genres[0] }}</p>
-                <p class="text-gray-600 text-sm">{{ movie.notes.mean }}</p>
+                <p class="font-semibold text-sm">{{ show.title || 'Titre inconnu' }}</p>
+                <p class="text-gray-600 text-sm">
+                    {{ Object.entries(show.genres).map(([value]) => `${value}`).join(', ') }}
+                </p>
+                <p class="text-gray-600 text-sm">{{ show.notes.mean }}</p>
             </li>
-        </ul>
+    </ul>
     </div>
 </template>
