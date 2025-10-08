@@ -14,19 +14,6 @@
 </template>
 
 <script setup>
-// Fonction qui d marrera le processus
-const startOAuth = async () => {
-  try {
-    // 1. Appelons une fonction Nuxt serveur pour construire l'URL de connexion
-    const { url } = await $fetch("/api/auth/oauth-start");
-
-    // 2. Redirection de l'utilisateur vers BetaSeries
-    if (url) {
-      window.location.href = url;
-    }
-  } catch (error) {
-    console.error("Erreur lors de l'initialisation d'OAuth:", error);
-    alert("Un probl me est survenu lors de la connexion.");
-  }
-};
+import { useAuth } from "../../composables/useAuth";
+const { startOAuth } = useAuth();
 </script>

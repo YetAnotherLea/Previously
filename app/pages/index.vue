@@ -1,44 +1,52 @@
 <template>
   <div class="container mx-auto p-4">
-    <nuxt-link
-      to="/movies"
-      class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 inline-block text-center"
-    >
-      Films
-    </nuxt-link>
+    <div class="space-x-4 mb-8">
+      <nuxt-link
+        to="/movies"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 inline-block text-center"
+      >
+        Films
+      </nuxt-link>
 
-    <nuxt-link
-      to="/shows"
-      class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 inline-block text-center"
-    >
-      Séries
-    </nuxt-link>
+      <nuxt-link
+        to="/shows"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 inline-block text-center"
+      >
+        Séries
+      </nuxt-link>
+    </div>
 
-    <!-- Bouton réel avec action JS -->
     <button
+      v-if="!isAuthenticated"
       @click="startOAuth"
-      class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+      class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300"
     >
       Connexion
     </button>
+
+    <button
+      v-else
+      @click="logout"
+      class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300"
+    >
+      Déconnexion
+    </button>
+
+    <h1 v-if="isAuthenticated" class="text-3xl font-bold mt-8 text-green-700">
+      Authentification Réussie!
+    </h1>
+    <h1 v-else class="text-3xl font-bold mt-8 text-yellow-600">
+      Veuillez vous connecter.
+    </h1>
   </div>
 </template>
 
-
 <script setup>
-// Fonction qui d marrera le processus
-const startOAuth = async () => {
-  try {
-    // 1. Appelons une fonction Nuxt serveur pour construire l'URL de connexion
-    const { url } = await $fetch("/api/auth/oauth-start");
+import { onMounted } from "vue";
+import { useAuth } from "../../composables/useAuth";
+const { startOAuth, logout, isAuthenticated, checkAuthStatus } = useAuth();
 
-    // 2. Redirection de l'utilisateur vers BetaSeries
-    if (url) {
-      window.location.href = url;
-    }
-  } catch (error) {
-    console.error("Erreur lors de l'initialisation d'OAuth:", error);
-    alert("Un probl me est survenu lors de la connexion.");
-  }
-};
+onMounted(() => {
+  checkAuthStatus();
+});
 </script>
