@@ -27,22 +27,22 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container mx-auto p-4" v-if="movie">
-    <nuxt-link to="/movies" class="text-blue-600 underline mb-4 inline-block">← Retour</nuxt-link>
+  <div class="container" v-if="movie">
+    <nuxt-link to="/movies" class="back-link">← Retour</nuxt-link>
 
-    <div class="flex flex-col md:flex-row gap-6">
+    <div class="movie-details">
       <img
         v-if="movie.poster"
         :src="movie.poster"
         :alt="movie.title"
-        class="w-64 h-auto rounded-lg shadow"
+        class="movie-poster"
       />
 
-      <div>
-        <h1 class="text-2xl font-bold mb-2">{{ movie.title }}</h1>
-        <p class="text-gray-700 mb-4">{{ movie.synopsis }}</p>
+      <div class="movie-info">
+        <h1>{{ movie.title }}</h1>
+        <p class="synopsis">{{ movie.synopsis }}</p>
 
-        <ul class="text-sm text-gray-600 space-y-1">
+        <ul class="info-list">
           <li><strong>Année :</strong> {{ movie.production_year }}</li>
           <li><strong>Genre :</strong> {{ movie.genres.join(', ') }}</li>
           <li><strong>Réalisateur :</strong> {{ movie.crew?.directors?.[0]?.name || 'Inconnu' }}</li>
@@ -55,7 +55,7 @@ onMounted(async () => {
           v-if="movie.resource_url"
           :href="movie.resource_url"
           target="_blank"
-          class="inline-block mt-4 text-blue-600 underline"
+          class="external-link"
         >
           Voir sur BetaSeries
         </a>
@@ -63,5 +63,89 @@ onMounted(async () => {
     </div>
   </div>
 
-  <div v-else class="text-center mt-10 text-gray-500">Chargement...</div>
+  <div v-else class="loading">Chargement...</div>
 </template>
+
+<style scoped>
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.back-link:hover {
+    color: #1d4ed8;
+}
+
+.movie-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+    .movie-details {
+        flex-direction: row;
+    }
+}
+
+.movie-poster {
+    width: 16rem;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.movie-info {
+    flex: 1;
+}
+
+.movie-info h1 {
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #111827;
+}
+
+.synopsis {
+    color: #374151;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.info-list {
+    list-style: none;
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+.info-list li {
+    margin-bottom: 0.25rem;
+}
+
+.info-list strong {
+    color: #111827;
+}
+
+.external-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.external-link:hover {
+    color: #1d4ed8;
+}
+
+.loading {
+    text-align: center;
+    margin-top: 2.5rem;
+    color: #6b7280;
+}
+</style>

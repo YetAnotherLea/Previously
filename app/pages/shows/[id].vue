@@ -33,40 +33,40 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container mx-auto p-4">
-    <nuxt-link to="/shows" class="text-blue-600 underline mb-4 inline-block">← Retour</nuxt-link>
+  <div class="container">
+    <nuxt-link to="/shows" class="back-link">← Retour</nuxt-link>
 
-    <div v-if="loading" class="text-center text-gray-500 mt-10">Chargement...</div>
-    <div v-else-if="error" class="text-center text-red-600 mt-10">{{ error }}</div>
+    <div v-if="loading" class="message loading">Chargement...</div>
+    <div v-else-if="error" class="message error">{{ error }}</div>
 
-    <div v-else-if="show" class="flex flex-col md:flex-row gap-6">
+    <div v-else-if="show" class="show-details">
       <img
         v-if="show.images?.poster"
         :src="show.images.poster"
         :alt="show.title"
-        class="w-64 h-auto rounded-lg shadow"
+        class="show-poster"
       />
 
-      <div>
-        <h1 class="text-2xl font-bold mb-2">{{ show.title }}</h1>
-        <p class="text-gray-700 mb-4">{{ show.description || "Aucune description disponible." }}</p>
+      <div class="show-info">
+        <h1>{{ show.title }}</h1>
+        <p class="description">{{ show.description || "Aucune description disponible." }}</p>
 
-        <ul class="text-sm text-gray-600 space-y-1">
+        <ul class="info-list">
           <li><strong>Création :</strong> {{ show.creation || 'Inconnue' }}</li>
           <li><strong>Langue :</strong> {{ show.language || 'N/A' }}</li>
           <li><strong>Chaîne :</strong> {{ show.network || 'Inconnue' }}</li>
           <li><strong>Statut :</strong> {{ show.status }}</li>
-          <li><strong>Durée d’un épisode :</strong> {{ show.length }} min</li>
+          <li><strong>Durée d'un épisode :</strong> {{ show.length }} min</li>
           <li><strong>Nombre de saisons :</strong> {{ show.seasons || show.seasons_details?.length || 'N/A' }}</li>
-          <li><strong>Nombre total d’épisodes :</strong> {{ show.episodes || 'N/A' }}</li>
+          <li><strong>Nombre total d'épisodes :</strong> {{ show.episodes || 'N/A' }}</li>
           <li><strong>Genres :</strong> {{ Object.values(show.genres).join(', ') || 'Aucun' }}</li>
           <li><strong>Note moyenne :</strong> {{ show.notes?.mean || 0 }}</li>
           <li><strong>Abonnés :</strong> {{ show.followers }}</li>
         </ul>
 
-        <div v-if="show.seasons_details?.length" class="mt-4">
-          <h2 class="font-semibold mb-1">Détails des saisons :</h2>
-          <ul class="list-disc ml-6 text-sm text-gray-700">
+        <div v-if="show.seasons_details?.length" class="seasons-section">
+          <h2>Détails des saisons :</h2>
+          <ul class="seasons-list">
             <li v-for="season in show.seasons_details" :key="season.number">
               Saison {{ season.number }} — {{ season.episodes }} épisodes
             </li>
@@ -77,7 +77,7 @@ onMounted(async () => {
           v-if="show.resource_url"
           :href="show.resource_url"
           target="_blank"
-          class="inline-block mt-4 text-blue-600 underline"
+          class="external-link"
         >
           Voir sur BetaSeries
         </a>
@@ -85,3 +85,117 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.back-link:hover {
+    color: #1d4ed8;
+}
+
+.message {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-size: 1rem;
+}
+
+.message.loading {
+    color: #6b7280;
+}
+
+.message.error {
+    color: #dc2626;
+}
+
+.show-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+    .show-details {
+        flex-direction: row;
+    }
+}
+
+.show-poster {
+    width: 16rem;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.show-info {
+    flex: 1;
+}
+
+.show-info h1 {
+    font-size: 1.875rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #111827;
+}
+
+.description {
+    color: #374151;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.info-list {
+    list-style: none;
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+.info-list li {
+    margin-bottom: 0.25rem;
+}
+
+.info-list strong {
+    color: #111827;
+}
+
+.seasons-section {
+    margin-top: 1rem;
+}
+
+.seasons-section h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #111827;
+}
+
+.seasons-list {
+    list-style: disc;
+    margin-left: 1.5rem;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.seasons-list li {
+    margin-bottom: 0.25rem;
+}
+
+.external-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.external-link:hover {
+    color: #1d4ed8;
+}
+</style>

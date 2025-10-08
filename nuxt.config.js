@@ -2,8 +2,8 @@ import { defineNuxtConfig } from "nuxt/config";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-10-08",
+  modules: ["@nuxt/ui"],
   devtools: { enabled: true },
-  modules: ["@nuxtjs/tailwindcss"],
   runtimeConfig: {
     betaseriesClientSecret: process.env.BETASERIES_CLIENT_SECRET,
     public: {
