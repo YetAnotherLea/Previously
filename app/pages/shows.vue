@@ -26,7 +26,7 @@ onMounted(async () => {
 <template>
     <div class="container mx-auto p-4">
         <nuxt-link
-        to="/shows"
+        to="/movies"
         class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 inline-block text-center"
         >
         Films
@@ -67,7 +67,9 @@ onMounted(async () => {
                 </div>
                 <p class="font-semibold text-sm">{{ show.title || 'Titre inconnu' }}</p>
                 <p class="text-gray-600 text-sm">({{ show.production_year }})</p>
-                <p class="text-gray-600 text-sm">{{ show.genres }}</p>
+                <p class="text-gray-600 text-sm">
+                    {{ Object.entries(show.genres).map(([value]) => `${value}`).join(', ') }}
+                </p>
                 <p class="text-gray-600 text-sm">{{ show.notes.mean }}</p>
             </li>
     </ul>
