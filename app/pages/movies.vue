@@ -1,26 +1,25 @@
 <script setup>
+
+const startOAuth = async () => {
+  try {
+    // 1. Appelons une fonction Nuxt serveur pour construire l'URL de connexion
+    const { url } = await $fetch("/api/auth/oauth-start");
+
+    // 2. Redirection de l'utilisateur vers BetaSeries
+    if (url) {
+      window.location.href = url;
+    }
+  } catch (error) {
+    console.error("Erreur lors de l'initialisation d'OAuth:", error);
+    alert("Un probl me est survenu lors de la connexion.");
+  }
+};
+
 import { ref, onMounted } from 'vue'
 
 const config = useRuntimeConfig()
 const movies = ref([])
 
-onMounted(async () => {
-    const myHeaders = new Headers()
-    myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId)
-
-    const res = await fetch("https://api.betaseries.com/movies/list", {
-        method: "GET",
-        headers: myHeaders,
-    })
-
-    if (!res.ok) {
-        console.error('Erreur API :', res.status)
-        return
-    }
-
-    const result = await res.json()
-    movies.value = result.movies
-})
 
 onMounted(async () => {
     const myHeaders = new Headers()
@@ -87,6 +86,6 @@ onMounted(async () => {
                 <p class="text-gray-600 text-sm">{{ movie.genres[0] }}</p>
                 <p class="text-gray-600 text-sm">{{ movie.notes.mean }}</p>
             </li>
-    </ul>
+        </ul>
     </div>
 </template>

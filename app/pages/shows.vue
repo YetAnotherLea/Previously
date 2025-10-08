@@ -1,4 +1,19 @@
 <script setup>
+const startOAuth = async () => {
+  try {
+    // 1. Appelons une fonction Nuxt serveur pour construire l'URL de connexion
+    const { url } = await $fetch("/api/auth/oauth-start");
+
+    // 2. Redirection de l'utilisateur vers BetaSeries
+    if (url) {
+      window.location.href = url;
+    }
+  } catch (error) {
+    console.error("Erreur lors de l'initialisation d'OAuth:", error);
+    alert("Un probl me est survenu lors de la connexion.");
+  }
+};
+
 import { ref, onMounted } from 'vue'
 
 const config = useRuntimeConfig()
@@ -66,7 +81,6 @@ onMounted(async () => {
                 Pas d'image
                 </div>
                 <p class="font-semibold text-sm">{{ show.title || 'Titre inconnu' }}</p>
-                <p class="text-gray-600 text-sm">({{ show.production_year }})</p>
                 <p class="text-gray-600 text-sm">
                     {{ Object.entries(show.genres).map(([value]) => `${value}`).join(', ') }}
                 </p>
