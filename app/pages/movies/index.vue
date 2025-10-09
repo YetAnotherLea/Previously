@@ -81,21 +81,7 @@ watch(page, fetchMovies)
             </ul>
 
             <div class="pagination">
-                <button 
-                    @click="page--" 
-                    :disabled="page <= 1"
-                    class="pagination-btn"
-                >
-                    Précédent
-                </button>
-                <span class="page-info">Page {{ page }}</span>
-                <button 
-                    @click="page++" 
-                    :disabled="page >= 20"
-                    class="pagination-btn"
-                >
-                    Suivant
-                </button>
+                <UPagination v-model:page="page" :total="100" />
             </div>
         </div>
     </div>

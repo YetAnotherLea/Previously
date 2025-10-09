@@ -11,16 +11,17 @@ const startOAuth = async () => {
   }
 };
 
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 
 const config = useRuntimeConfig()
 const shows = ref([])
+const page = ref(1)
 
-onMounted(async () => {
+const fetchMovies = async () => {
     const myHeaders = new Headers()
     myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId)
 
-    const res = await fetch("https://api.betaseries.com/shows/search?page=10", {
+    const res = await fetch(`https://api.betaseries.com/shows/search?page=${page.value}`, {
         method: "GET",
         headers: myHeaders,
     })
@@ -32,7 +33,11 @@ onMounted(async () => {
 
     const result = await res.json()
     shows.value = result.shows
-})
+}
+
+onMounted(fetchMovies)
+
+watch(page, fetchMovies)
 </script>
 
 <template>
@@ -76,6 +81,9 @@ onMounted(async () => {
                     <p class="show-rating">{{ show.notes.mean }}</p>
                 </li>
             </ul>
+        </div>
+        <div class="pagination">
+            <UPagination v-model:page="page" :total="100" />
         </div>
     </div>
 </template>
