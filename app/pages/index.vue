@@ -1,38 +1,23 @@
 <template>
   <div class="container">
+    <!-- Navigație -->
     <nav class="nav-links">
-      <nuxt-link to="/movies">
-        Films
-      </nuxt-link>
-
-      <nuxt-link to="/shows">
-        Séries
-      </nuxt-link>
+      <nuxt-link to="/movies">Films</nuxt-link>
+      <nuxt-link to="/shows">Séries</nuxt-link>
     </nav>
 
+    <!-- Autentificare -->
     <div class="auth-section">
-      <button
-        v-if="!isAuthenticated"
-        @click="startOAuth"
-        class="btn-auth"
-      >
+      <button v-if="!isAuthenticated" @click="startOAuth" class="btn-auth">
         Connexion
       </button>
 
-      <button
-        v-else
-        @click="logout"
-        class="btn-logout"
-      >
-        Déconnexion
-      </button>
+      <button v-else @click="logout" class="btn-logout">Déconnexion</button>
 
       <h1 v-if="isAuthenticated" class="auth-message">
         Authentification Réussie!
       </h1>
-      <h1 v-else class="auth-message">
-        Veuillez vous connecter.
-      </h1>
+      <h1 v-else class="auth-message">Veuillez vous connecter.</h1>
     </div>
   </div>
 </template>
