@@ -19,6 +19,12 @@ const { startOAuth } = useAuth();
 </template>
 
 <style scoped>
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
 .login-card {
   max-width: 500px;
   margin: 3rem auto;
