@@ -34,7 +34,7 @@ watch(page, fetchMovies)
 </script>
 
 <template>
-  <div class="container">
+  <div v-if="checkAuthStatus" class="container">
     <nav class="nav-buttons">
       <nuxt-link to="/movies" class="btn-primary">
         Films

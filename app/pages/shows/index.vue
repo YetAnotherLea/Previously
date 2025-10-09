@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { useAuth } from '../composables/useAuth'
+import { useAuth  } from '../composables/useAuth'
 
 const { startOAuth, isAuthenticated, logout, checkAuthStatus } = useAuth()
 const config = useRuntimeConfig()
@@ -34,7 +34,7 @@ watch(page, fetchShows)
 </script>
 
 <template>
-  <div class="container">
+  <div v-if="checkAuthStatus" class="container">
     <nav class="nav-buttons">
       <nuxt-link to="/movies" class="btn-primary">
         Films
