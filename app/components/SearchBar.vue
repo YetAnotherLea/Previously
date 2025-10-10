@@ -14,7 +14,7 @@
         class="search-button"
         :disabled="!searchQuery"
       >
-        <UIcon name="i-hero-magnifying-glass" />
+        <img :src="magnify" alt="Loupe" class="search-icon" />
       </button>
     </div>
     <div v-if="searchResults.length > 0 && showResults" class="search-results">
@@ -49,6 +49,7 @@
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
+import magnify from "../../public/search.svg";
 
 const router = useRouter();
 const searchQuery = ref("");

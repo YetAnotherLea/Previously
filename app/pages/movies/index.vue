@@ -187,6 +187,13 @@ watch(page, (newPage) => {
   margin-bottom: 2rem;
 }
 
+.btn-logout {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  text-align: center;
+}
+
 @media (min-width: 768px) {
   .movies-grid {
     grid-template-columns: repeat(4, 1fr);

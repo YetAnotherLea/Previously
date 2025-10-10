@@ -5,7 +5,8 @@
       <nuxt-link to="/movies">Films</nuxt-link>
       <nuxt-link to="/shows">Séries</nuxt-link>
     </nav>
-
+    <!-- Logo -->
+    <img :src="logoPreviously" alt="Logo Previously" class="logo" />
     <!-- Autentificare -->
     <div class="auth-section">
       <button v-if="!isAuthenticated" @click="startOAuth" class="btn-auth">
@@ -14,9 +15,7 @@
 
       <button v-else @click="logout" class="btn-logout">Déconnexion</button>
 
-      <h1 v-if="isAuthenticated" class="auth-message">
-        Authentification Réussie!
-      </h1>
+      <h1 v-if="isAuthenticated" class="auth-message"></h1>
       <h1 v-else class="auth-message">Veuillez vous connecter.</h1>
     </div>
   </div>
@@ -25,7 +24,7 @@
 <script setup>
 import { onMounted } from "vue";
 import { useAuth } from "../composables/useAuth";
-
+import logoPreviously from "../../public/cc.gif";
 const { startOAuth, logout, isAuthenticated, checkAuthStatus } = useAuth();
 
 onMounted(() => {
@@ -43,11 +42,12 @@ onMounted(() => {
 .nav-links {
   display: flex;
   gap: 1rem;
-  margin-bottom: 2rem;
+  margin: 0 auto;
+  justify-content: center;
 }
 
 .nav-links a {
-  color: #2563eb;
+  color: #4800ff;
   text-decoration: none;
   font-weight: 500;
   padding: 0.5rem 1rem;
@@ -60,10 +60,11 @@ onMounted(() => {
 }
 
 .auth-section {
-  margin-top: 2rem;
+  position: absolute;
+  top: 20px;
+  right: 20px;
   text-align: center;
 }
-
 .btn-auth,
 .btn-logout {
   padding: 0.75rem 1.5rem;
@@ -98,5 +99,16 @@ onMounted(() => {
   font-size: 1.5rem;
   font-weight: 600;
   color: #111827;
+}
+
+.logo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  object-fit: cover;
+  z-index: -1;
 }
 </style>
