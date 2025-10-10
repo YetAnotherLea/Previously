@@ -82,5 +82,5 @@ Le projet est alors accessible sur :
 
 ## Collaborateurs
 
-- [Stefan-Paris Paduraru]
-- [Léa Ballester]
+- Stefan-Paris Paduraru
+- Léa Ballester
