@@ -1,65 +1,118 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { useAuth } from '../composables/useAuth'
+import { ref, onMounted, watch } from "vue";
+import { useAuth } from "../../../composables/useAuth";
+import SearchBar from "../../components/SearchBar.vue";
 
-const { startOAuth, isAuthenticated, logout, checkAuthStatus } = useAuth()
-const config = useRuntimeConfig()
-const movies = ref([])
-const page = ref(1)
+const { startOAuth, isAuthenticated, logout, checkAuthStatus } = useAuth();
+const config = useRuntimeConfig();
+const movies = ref([]);
+const filteredMovies = ref([]);
+const page = ref(1);
+const searchActive = ref(false);
+const currentSearchQuery = ref("");
 
 onMounted(() => {
-  checkAuthStatus()
-  fetchMovies()
-})
+  checkAuthStatus();
+  fetchMovies();
+});
 
-const fetchMovies = async () => {
-  const myHeaders = new Headers()
-  myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId)
+const fetchMovies = async (query = null, pageNum = 1) => {
+  try {
+    const myHeaders = new Headers();
+    myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId);
 
-  const res = await fetch(`https://api.betaseries.com/movies/search?page=${page.value}`, {
-    method: "GET",
-    headers: myHeaders,
-  })
+    let url = `https://api.betaseries.com/movies/search?page=${pageNum}`;
+    if (query && query.length >= 2) {
+      url = `https://api.betaseries.com/movies/search?title=${encodeURIComponent(
+        query
+      )}&page=${pageNum}`;
+    }
 
-  if (!res.ok) {
-    console.error('Erreur API :', res.status)
-    return
+    const res = await fetch(url, { method: "GET", headers: myHeaders });
+
+    if (!res.ok) {
+      console.error("Erreur API :", res.status);
+      return;
+    }
+
+    const result = await res.json();
+    if (query) {
+      filteredMovies.value = result.movies || [];
+      currentSearchQuery.value = query;
+    } else {
+      movies.value = result.movies || [];
+      currentSearchQuery.value = "";
+    }
+    searchActive.value = !!query;
+  } catch (error) {
+    console.error("Erreur fetch:", error);
   }
+};
 
-  const result = await res.json()
-  movies.value = result.movies
-}
+const handleSearch = ({ query, results }) => {
+  if (query) {
+    page.value = 1;
+    fetchMovies(query, 1);
+  }
+};
 
-watch(page, fetchMovies)
+const handleClearSearch = () => {
+  page.value = 1;
+  fetchMovies();
+};
+
+watch(page, (newPage) => {
+  if (!searchActive.value) {
+    fetchMovies(null, newPage);
+  } else if (currentSearchQuery.value) {
+    fetchMovies(currentSearchQuery.value, newPage);
+  }
+});
 </script>
 
 <template>
-  <div v-if="checkAuthStatus" class="container">
+  <div class="container">
+    <SearchBar @search="handleSearch" @clear="handleClearSearch" />
+
     <div class="content">
-      <h1>Liste des films</h1>
+      <h1>
+        {{
+          searchActive
+            ? `Résultats pour "${currentSearchQuery}"`
+            : "Liste des films"
+        }}
+      </h1>
       <ul class="movies-grid">
         <li
-          v-for="movie in movies"
+          v-for="movie in searchActive ? filteredMovies : movies"
           :key="movie.id"
-          @click="$router.push(`/movies/${movie.id}`)"
           class="movie-card"
         >
-          <img
-            v-if="movie.poster"
-            :src="movie.poster"
-            :alt="movie.title"
-            class="movie-poster"
-          />
-          <div v-else class="movie-poster-placeholder">
-            Pas d'image
-          </div>
-          <p class="movie-title">{{ movie.title || 'Titre inconnu' }}</p>
-          <p class="movie-genre">{{ movie.genres[0] }}</p>
-          <p class="movie-rating">{{ movie.notes.mean }}</p>
+          <NuxtLink :to="`/movies/${movie.id}`" class="movie-link">
+            <img
+              v-if="movie.poster"
+              :src="movie.poster"
+              :alt="movie.title"
+              class="movie-poster"
+            />
+            <div v-else class="movie-poster-placeholder">Pas d'image</div>
+            <div class="movie-info">
+              <h3 class="movie-title">{{ movie.title || "Titre inconnu" }}</h3>
+              <p class="movie-genre">{{ movie.genres?.[0] || "N/A" }}</p>
+              <p class="movie-rating">{{ movie.notes?.mean || "N/A" }}</p>
+            </div>
+          </NuxtLink>
         </li>
       </ul>
 
-      <div class="pagination">
+      <div
+        v-if="movies.length === 0 && filteredMovies.length === 0"
+        class="no-results"
+      >
+        Aucun résultat trouvé.
+      </div>
+
+      <div v-if="!searchActive" class="pagination">
         <UPagination v-model:page="page" :total="100" />
       </div>
     </div>
@@ -119,6 +172,13 @@ watch(page, fetchMovies)
   margin-bottom: 2rem;
 }
 
+.btn-logout {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  text-align: center;
+}
+
 @media (min-width: 768px) {
   .movies-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -130,13 +190,8 @@ watch(page, fetchMovies)
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem;
-  cursor: pointer;
+  overflow: hidden;
   transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 
 .movie-card:hover {
@@ -144,16 +199,21 @@ watch(page, fetchMovies)
   transform: translateY(-2px);
 }
 
+.movie-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
 .movie-poster {
-  width: 10rem;
+  width: 100%;
   height: 15rem;
   object-fit: cover;
-  border-radius: 0.375rem;
-  margin-bottom: 0.5rem;
 }
 
 .movie-poster-placeholder {
-  width: 10rem;
+  width: 100%;
   height: 15rem;
   background-color: #e5e7eb;
   display: flex;
@@ -161,25 +221,26 @@ watch(page, fetchMovies)
   justify-content: center;
   color: #6b7280;
   font-size: 0.875rem;
-  border-radius: 0.375rem;
-  margin-bottom: 0.5rem;
+}
+
+.movie-info {
+  padding: 0.75rem;
+  text-align: center;
 }
 
 .movie-title {
   font-weight: 600;
   font-size: 0.875rem;
   margin-bottom: 0.25rem;
+  line-height: 1.3;
+  color: #111827;
 }
 
-.movie-genre {
-  color: #4b5563;
-  font-size: 0.875rem;
-  margin-bottom: 0.25rem;
-}
-
+.movie-genre,
 .movie-rating {
   color: #4b5563;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
 }
 
 .pagination {
@@ -188,5 +249,12 @@ watch(page, fetchMovies)
   align-items: center;
   gap: 1rem;
   margin-top: 2rem;
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 1.125rem;
 }
 </style>

@@ -1,67 +1,124 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { useAuth  } from '../composables/useAuth'
+import { ref, onMounted, watch } from "vue";
+import { useAuth } from "../../../composables/useAuth";
+import SearchBar from "../../components/SearchBar.vue";
 
-const { startOAuth, isAuthenticated, logout, checkAuthStatus } = useAuth()
-const config = useRuntimeConfig()
-const shows = ref([])
-const page = ref(1)
+const { startOAuth, isAuthenticated, logout, checkAuthStatus } = useAuth();
+const config = useRuntimeConfig();
+const shows = ref([]);
+const filteredShows = ref([]);
+const page = ref(1);
+const searchActive = ref(false);
+const currentSearchQuery = ref("");
 
 onMounted(() => {
-  checkAuthStatus()
-  fetchShows()
-})
+  checkAuthStatus();
+  fetchShows();
+});
 
-const fetchShows = async () => {
-  const myHeaders = new Headers()
-  myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId)
+const fetchShows = async (query = null, pageNum = 1) => {
+  try {
+    const myHeaders = new Headers();
+    myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId);
 
-  const res = await fetch(`https://api.betaseries.com/shows/search?page=${page.value}`, {
-    method: "GET",
-    headers: myHeaders,
-  })
+    let url = `https://api.betaseries.com/shows/search?page=${pageNum}`;
+    if (query && query.length >= 2) {
+      url = `https://api.betaseries.com/shows/search?title=${encodeURIComponent(
+        query
+      )}&page=${pageNum}`;
+    }
 
-  if (!res.ok) {
-    console.error('Erreur API :', res.status)
-    return
+    const res = await fetch(url, { method: "GET", headers: myHeaders });
+
+    if (!res.ok) {
+      console.error("Erreur API :", res.status);
+      return;
+    }
+
+    const result = await res.json();
+    if (query) {
+      filteredShows.value = result.shows || [];
+      currentSearchQuery.value = query;
+    } else {
+      shows.value = result.shows || [];
+      currentSearchQuery.value = "";
+    }
+    searchActive.value = !!query;
+  } catch (error) {
+    console.error("Erreur fetch:", error);
   }
+};
 
-  const result = await res.json()
-  shows.value = result.shows
-}
+const handleSearch = ({ query, results }) => {
+  if (query) {
+    page.value = 1;
+    fetchShows(query, 1);
+  }
+};
 
-watch(page, fetchShows)
+const handleClearSearch = () => {
+  page.value = 1;
+  fetchShows();
+};
+
+watch(page, (newPage) => {
+  if (!searchActive.value) {
+    fetchShows(null, newPage);
+  } else if (currentSearchQuery.value) {
+    fetchShows(currentSearchQuery.value, newPage);
+  }
+});
 </script>
 
 <template>
-  <div v-if="checkAuthStatus" class="container">
+  <div class="container">
+    <SearchBar @search="handleSearch" @clear="handleClearSearch" />
+
     <div class="content">
-      <h1>Liste des séries</h1>
+      <h1>
+        {{
+          searchActive
+            ? `Résultats pour "${currentSearchQuery}"`
+            : "Liste des séries"
+        }}
+      </h1>
       <ul class="shows-grid">
         <li
-          v-for="show in shows"
+          v-for="show in searchActive ? filteredShows : shows"
           :key="show.id"
-          @click="$router.push(`/shows/${show.id}`)"
           class="show-card"
         >
-          <img
-            v-if="show.images.poster"
-            :src="show.images.poster"
-            :alt="show.title"
-            class="show-poster"
-          />
-          <div v-else class="show-poster-placeholder">
-            Pas d'image
-          </div>
-          <p class="show-title">{{ show.title || 'Titre inconnu' }}</p>
-          <p class="show-genre">
-            {{ Object.entries(show.genres).map(([value]) => `${value}`).join(', ') }}
-          </p>
-          <p class="show-rating">{{ show.notes.mean }}</p>
+          <NuxtLink :to="`/shows/${show.id}`" class="show-link">
+            <img
+              v-if="show.images?.poster"
+              :src="show.images.poster"
+              :alt="show.title"
+              class="show-poster"
+            />
+            <div v-else class="show-poster-placeholder">Pas d'image</div>
+            <div class="show-info">
+              <h3 class="show-title">{{ show.title || "Titre inconnu" }}</h3>
+              <p class="show-genre">
+                {{
+                  Object.keys(show.genres || {})
+                    .slice(0, 2)
+                    .join(", ") || "N/A"
+                }}
+              </p>
+              <p class="show-rating">{{ show.notes?.mean || "N/A" }}</p>
+            </div>
+          </NuxtLink>
         </li>
       </ul>
 
-      <div class="pagination">
+      <div
+        v-if="shows.length === 0 && filteredShows.length === 0"
+        class="no-results"
+      >
+        Aucun résultat trouvé.
+      </div>
+
+      <div v-if="!searchActive" class="pagination">
         <UPagination v-model:page="page" :total="100" />
       </div>
     </div>
@@ -118,6 +175,14 @@ watch(page, fetchShows)
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.btn-logout {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  text-align: center;
 }
 
 @media (min-width: 768px) {
@@ -131,13 +196,8 @@ watch(page, fetchShows)
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem;
-  cursor: pointer;
+  overflow: hidden;
   transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 
 .show-card:hover {
@@ -145,16 +205,21 @@ watch(page, fetchShows)
   transform: translateY(-2px);
 }
 
+.show-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
 .show-poster {
-  width: 10rem;
+  width: 100%;
   height: 15rem;
   object-fit: cover;
-  border-radius: 0.375rem;
-  margin-bottom: 0.5rem;
 }
 
 .show-poster-placeholder {
-  width: 10rem;
+  width: 100%;
   height: 15rem;
   background-color: #e5e7eb;
   display: flex;
@@ -162,24 +227,40 @@ watch(page, fetchShows)
   justify-content: center;
   color: #6b7280;
   font-size: 0.875rem;
-  border-radius: 0.375rem;
-  margin-bottom: 0.5rem;
+}
+
+.show-info {
+  padding: 0.75rem;
+  text-align: center;
 }
 
 .show-title {
   font-weight: 600;
   font-size: 0.875rem;
   margin-bottom: 0.25rem;
+  line-height: 1.3;
+  color: #111827;
 }
 
-.show-genre {
+.show-genre,
+.show-rating {
   color: #4b5563;
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   margin-bottom: 0.25rem;
 }
 
-.show-rating {
-  color: #4b5563;
-  font-size: 0.875rem;
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 1.125rem;
 }
 </style>
