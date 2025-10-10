@@ -1,15 +1,5 @@
 <template>
   <div class="container">
-    <nav class="nav-links">
-      <nuxt-link to="/movies">
-        Films
-      </nuxt-link>
-
-      <nuxt-link to="/shows">
-        Séries
-      </nuxt-link>
-    </nav>
-
     <div class="auth-section">
       <button
         v-if="!isAuthenticated"

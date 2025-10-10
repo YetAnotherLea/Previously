@@ -35,32 +35,6 @@ watch(page, fetchMovies)
 
 <template>
   <div v-if="checkAuthStatus" class="container">
-    <nav class="nav-buttons">
-      <nuxt-link to="/movies" class="btn-primary">
-        Films
-      </nuxt-link>
-
-      <nuxt-link to="/shows" class="btn-primary">
-        Séries
-      </nuxt-link>
-
-      <button 
-        v-if="!isAuthenticated"
-        @click="startOAuth" 
-        class="btn-primary btn-auth"
-      >
-        Connexion
-      </button>
-
-      <button 
-        v-else
-        @click="logout" 
-        class="btn-primary btn-logout"
-      >
-        Déconnexion
-      </button>
-    </nav>
-
     <div class="content">
       <h1>Liste des films</h1>
       <ul class="movies-grid">
