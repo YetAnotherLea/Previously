@@ -126,46 +126,6 @@ watch(page, (newPage) => {
 </template>
 
 <style scoped>
-.nav-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-
-.btn-primary {
-  padding: 0.5rem 1rem;
-  background-color: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.btn-primary:hover {
-  background-color: #1d4ed8;
-}
-
-.btn-auth {
-  background-color: #16a34a;
-}
-
-.btn-auth:hover {
-  background-color: #15803d;
-}
-
-.btn-logout {
-  background-color: #dc2626;
-}
-
-.btn-logout:hover {
-  background-color: #b91c1c;
-}
-
 .content {
   margin-top: 2rem;
 }
@@ -178,13 +138,6 @@ watch(page, (newPage) => {
   margin-bottom: 2rem;
 }
 
-.btn-logout {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  text-align: center;
-}
-
 @media (min-width: 768px) {
   .shows-grid {
     grid-template-columns: repeat(4, 1fr);
@@ -194,7 +147,7 @@ watch(page, (newPage) => {
 .show-card {
   background: white;
   border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
+  border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: all 0.3s ease;
@@ -214,8 +167,8 @@ watch(page, (newPage) => {
 
 .show-poster {
   width: 100%;
-  height: 15rem;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
 }
 
 .show-poster-placeholder {
@@ -253,8 +206,25 @@ watch(page, (newPage) => {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
   margin-top: 2rem;
+}
+
+.pagination :deep(button) {
+  margin: 0 0.25rem;
+}
+
+.pagination :deep(button:first-child),
+.pagination :deep(button:last-child) {
+  margin: 0;
+}
+
+.pagination :deep(button:first-child) {
+  margin-right: 1.5rem;
+}
+
+.pagination :deep(button:last-child) {
+  margin-left: 1.5rem;
 }
 
 .no-results {

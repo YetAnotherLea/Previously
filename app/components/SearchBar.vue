@@ -29,12 +29,12 @@
           class="result-item"
           @click="navigateToResult(result)"
         >
-          <img
-            v-if="result.poster || result.images?.poster"
-            :src="result.poster || result.images.poster"
-            :alt="result.title"
-            class="result-image"
-          />
+        <img
+          v-if="result.poster"
+          :src="result.poster"
+          :alt="result.title"
+          class="result-image"
+        />
           <div v-else class="result-image-placeholder">Pas d'image</div>
           <div class="result-info">
             <h4>{{ result.title }}</h4>
@@ -86,7 +86,24 @@ const handleSearch = () => {
 
         if (res.ok) {
           const result = await res.json();
-          searchResults.value = result.movies?.concat(result.shows || []) || [];
+          
+          // Normaliser les données des films
+          const movies = (result.movies || []).map(movie => ({
+            ...movie,
+            type: 'movie',
+            poster: movie.poster,
+            title: movie.title
+          }));
+          
+          // Normaliser les données des séries
+          const shows = (result.shows || []).map(show => ({
+            ...show,
+            type: 'show',
+            poster: show.images?.poster || show.poster,
+            title: show.title
+          }));
+          
+          searchResults.value = [...movies, ...shows];
           showResults.value = true;
           emit("search", {
             query: searchQuery.value,
@@ -183,8 +200,7 @@ watch(searchQuery, (newVal) => {
 }
 
 .search-button {
-  background: #2563eb;
-  color: white;
+  background: #000;
   border: none;
   padding: 0.75rem;
   border-radius: 0.375rem;
@@ -196,8 +212,14 @@ watch(searchQuery, (newVal) => {
   width: 44px;
 }
 
-.search-button:hover:not(:disabled) {
-  background: #1d4ed8;
+.search-icon {
+  filter: brightness(0) invert(1);
+  width: 20px;
+  height: 20px;
+}
+
+.search-button:disabled .search-icon {
+  filter: brightness(0) invert(0.5);
 }
 
 .search-button:disabled {
@@ -231,6 +253,7 @@ watch(searchQuery, (newVal) => {
 
 .clear-results {
   background: none;
+  color: #000;
   border: 1px solid #d1d5db;
   padding: 0.25rem 0.75rem;
   border-radius: 0.25rem;

@@ -8,7 +8,7 @@ export const useAuth = () => {
   const checkAuthStatus = () => {
     isAuthenticated.value = !!useCookie("betaseries_token").value;
     if (!isAuthenticated.value) {
-      navigateTo("/");
+      navigateTo("/login");
     }
   };
 

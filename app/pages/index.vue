@@ -5,23 +5,129 @@
         Connexion
       </button>
 
-      <button v-else @click="logout" class="btn-logout">Déconnexion</button>
+      <div v-else class="index-main">
+        <img :src="backgroundImage" alt="Background" class="background" />
+      </div>
 
       <h1 v-if="isAuthenticated" class="auth-message"></h1>
       <h1 v-else class="auth-message">Veuillez vous connecter.</h1>
+    </div>
+
+    <div v-if="isAuthenticated" class="content">
+      <!-- Section Films Populaires -->
+      <section class="popular-section">
+        <h2 class="section-title">Films populaires</h2>
+        <ul class="popular-grid">
+          <li
+            v-for="movie in popularMovies"
+            :key="movie.id"
+            class="content-card"
+          >
+            <NuxtLink :to="`/movies/${movie.id}`" class="content-link">
+              <img
+                v-if="movie.poster"
+                :src="movie.poster"
+                :alt="movie.title"
+                class="content-poster"
+              />
+              <div v-else class="content-poster-placeholder">Pas d'image</div>
+              <div class="content-info">
+                <h3 class="content-title">{{ movie.title || "Titre inconnu" }}</h3>
+              </div>
+            </NuxtLink>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Section Séries Populaires -->
+      <section class="popular-section">
+        <h2 class="section-title">Séries populaires</h2>
+        <ul class="popular-grid">
+          <li
+            v-for="show in popularShows"
+            :key="show.id"
+            class="content-card"
+          >
+            <NuxtLink :to="`/shows/${show.id}`" class="content-link">
+              <img
+                v-if="show.images?.poster"
+                :src="show.images.poster"
+                :alt="show.title"
+                class="show-poster"
+              />
+              <div v-else class="content-poster-placeholder">Pas d'image</div>
+              <div class="content-info">
+                <h3 class="content-title">{{ show.title || "Titre inconnu" }}</h3>
+              </div>
+            </NuxtLink>
+          </li>
+        </ul>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useAuth } from "../composables/useAuth";
-import logoPreviously from "../../public/cc.gif";
+import backgroundImage from "../../public/cc.gif";
+
 const { startOAuth, logout, isAuthenticated, checkAuthStatus } = useAuth();
+const config = useRuntimeConfig();
+const popularMovies = ref([]);
+const popularShows = ref([]);
 
 onMounted(() => {
   checkAuthStatus();
+  if (isAuthenticated.value) {
+    fetchPopularMovies();
+    fetchPopularShows();
+  }
 });
+
+const fetchPopularMovies = async () => {
+  try {
+    const myHeaders = new Headers();
+    myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId);
+
+    const res = await fetch("https://api.betaseries.com/movies/discover?type=popular", {
+      method: "GET",
+      headers: myHeaders
+    });
+
+    if (!res.ok) {
+      console.error("Erreur API films populaires :", res.status);
+      return;
+    }
+
+    const result = await res.json();
+    popularMovies.value = (result.movies || []).slice(0, 5);
+  } catch (error) {
+    console.error("Erreur fetch films populaires:", error);
+  }
+};
+
+const fetchPopularShows = async () => {
+  try {
+    const myHeaders = new Headers();
+    myHeaders.append("X-BetaSeries-Key", config.public.betaseriesClientId);
+
+    const res = await fetch("https://api.betaseries.com/shows/discover", {
+      method: "GET",
+      headers: myHeaders
+    });
+
+    if (!res.ok) {
+      console.error("Erreur API séries populaires :", res.status);
+      return;
+    }
+
+    const result = await res.json();
+    popularShows.value = (result.shows || []).slice(0, 5);
+  } catch (error) {
+    console.error("Erreur fetch séries populaires:", error);
+  }
+};
 </script>
 
 <style scoped>
@@ -31,59 +137,11 @@ onMounted(() => {
   padding: 1rem;
 }
 
-.nav-links {
-  display: flex;
-  gap: 1rem;
-  margin: 0 auto;
-  justify-content: center;
-}
-
-.nav-links a {
-  color: #4800ff;
-  text-decoration: none;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  transition: background-color 0.3s ease;
-}
-
-.nav-links a:hover {
-  background-color: #eff6ff;
-}
-
 .auth-section {
   position: absolute;
   top: 20px;
   right: 20px;
   text-align: center;
-}
-.btn-auth,
-.btn-logout {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-}
-
-.btn-auth {
-  background-color: #16a34a;
-  color: white;
-}
-
-.btn-auth:hover {
-  background-color: #15803d;
-}
-
-.btn-logout {
-  background-color: #dc2626;
-  color: white;
-}
-
-.btn-logout:hover {
-  background-color: #b91c1c;
 }
 
 .auth-message {
@@ -93,7 +151,7 @@ onMounted(() => {
   color: #111827;
 }
 
-.logo {
+.background {
   position: fixed;
   top: 0;
   left: 0;
@@ -102,5 +160,83 @@ onMounted(() => {
   opacity: 0.5;
   object-fit: cover;
   z-index: -1;
+}
+
+.content {
+  margin-top: 2rem;
+}
+
+.popular-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #111827;
+}
+
+.popular-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .popular-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.content-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.content-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.content-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+.content-poster {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.content-poster-placeholder {
+  width: 100%;
+  height: 15rem;
+  background-color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.content-info {
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.content-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  color: #111827;
 }
 </style>

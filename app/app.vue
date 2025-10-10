@@ -19,7 +19,7 @@ body {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
   color: #333;
-  background-color: #f5f5f5;
+  background-color: #fefefe;
 }
 
 /* Container */
@@ -31,24 +31,22 @@ body {
 
 /* Boutons */
 button, a.btn {
+  background-color: #000000;
+  color: #fff;
   display: inline-block;
   padding: 0.5rem 1rem;
   font-weight: bold;
   text-decoration: none;
   border: none;
-  border-radius: 0.375rem;
+  border-radius: 2px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
 }
 
-.btn-primary, button {
-  background-color: #2563eb;
-  color: white;
-}
-
-.btn-primary:hover, button:hover {
-  background-color: #1d4ed8;
+.button:hover,
+.a.btn:hover {
+  background-color: #374151;
 }
 
 /* Liens */
@@ -59,6 +57,10 @@ a {
 
 a:hover {
   color: #1d4ed8;
+}
+
+.nav-links a {
+  text-decoration: none;
 }
 
 /* Grilles */
