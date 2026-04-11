@@ -1,86 +1,127 @@
-# E-commerce Project
+# Previously
 
-![screenshot](./app/assets/screenshot.png)
+![Previously banner](./app/assets/screenshot.png)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Nuxt-4.1.3-blue?logo=nuxt&logoColor=white"/>
-</p>
+![Nuxt](https://img.shields.io/badge/Nuxt-4.1.3-00DC82?logo=nuxt&logoColor=white) ![Vue](https://img.shields.io/badge/Vue-3-4FC08D?logo=vue.js&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
-**Objectif** : développer un site de suivi de films et de séries.  
-**Durée du projet** : 4 jours
-
-Le site inclut :
-
-- Connexion à Betaseries
-- Routes accessibles uniquement aux utilisateurs connectés
-- Affichage des films et séries
-- Barre de recherche
-- Détail des films et redirections vers Betaseries
-
-## Sommaire
-
-1. [Installation](#-installation)
-2. [Démarrage](#-démarrage)
-3. [Pistes d’amélioration](#-pistes-damélioration)
-4. [Collaborateurs](#-collaborateurs)
+Site de suivi de films et de séries développé dans le cadre d'un projet Epitech Web Academy. Previously permet de parcourir des films et séries, d'effectuer des recherches et d'accéder aux détails des contenus via une interface Nuxt connectée à l'API Betaseries.
 
 ---
 
-## 🔧 Installation
+## Prérequis
 
-1. Cloner le dépôt :
+- [Node.js](https://nodejs.org/) 18+
+- [Docker](https://www.docker.com/) (optionnel)
+- Un compte [Betaseries](https://www.betaseries.com/en/registration)
 
-   ```bash
-   git clone git@github.com:EpitechWebAcademiePromo2026/W-SPE-502-MAR-2-1-previously-lea.ballester.git
-   git checkout main
-   ```
+---
 
-2. Installer nuxt et les dépendances :
+## Installation
 
-   ```bash
-   # npm
-    npm install
-    # pnpm
-    pnpm install
-    # yarn
-    yarn install
-    # bun
-    bun install
-   ```
-
-   Cette étape peut prendre quelques minutes.
-
-3. Créer un compte Betaseries :
-
-[Rendez-vous sur le site de Betaseries et créez votre compte.](https://www.betaseries.com/en/registration)
-
-Attention, ne créez pas de compte avec google (la redirection de Betaseries ne prend pas en compte ce type de connexion.)
-
-## Démarrage
+### 1. Cloner le dépôt
 
 ```bash
-# npm
-npm run dev
-# pnpm
-pnpm dev
-# yarn
-yarn dev
-# bun
-bun run dev
+git clone git@github.com:EpitechWebAcademiePromo2026/W-SPE-502-MAR-2-1-previously-lea.ballester.git
+cd W-SPE-502-MAR-2-1-previously-lea.ballester
 ```
 
-Le projet est alors accessible sur :
+### 2. Obtenir une clé API Betaseries
 
-- `http://localhost:3000`
+1. Connectez-vous à votre compte Betaseries.
+2. Rendez-vous sur [la page de gestion des clés API](https://www.betaseries.com/api/).
+3. Remplissez le formulaire :
+   - **Nom de votre application** : `Previously`
+   - **Type** : `Projet personnel`
+   - **URL de callback** : `http://localhost:3000/api/auth/oauth-callback`
+4. Validez. Betaseries vous fournit un **client ID** et un **client secret**.
 
-## Pistes d’amélioration
+> Ne créez pas de compte avec Google. La redirection OAuth de Betaseries ne prend pas en charge ce type de connexion.
+
+### 3. Configurer les variables d'environnement
+
+Créez un fichier `.env` à la racine du projet :
+
+```dotenv
+NUXT_PUBLIC_BETASERIES_CLIENT_ID=votre_client_id
+BETASERIES_CLIENT_SECRET=votre_client_secret
+NUXT_PUBLIC_APP_BASE_URL=http://localhost:3000
+```
+
+| Variable | Description |
+|---|---|
+| `NUXT_PUBLIC_BETASERIES_CLIENT_ID` | Clé publique fournie par Betaseries |
+| `BETASERIES_CLIENT_SECRET` | Clé secrète fournie par Betaseries |
+| `NUXT_PUBLIC_APP_BASE_URL` | URL de base de l'application |
+
+> Ne commitez jamais votre fichier `.env`. Il est listé dans `.gitignore` et `.dockerignore`.
+
+### 4. Installer les dépendances et lancer le projet
+
+```bash
+npm install
+npm run dev
+```
+
+L'application est accessible sur : `http://localhost:3000`
+
+---
+
+## Démarrage avec Docker
+
+Le fichier `.env` doit être créé avant de lancer Docker (voir étape 3).
+
+```bash
+# Construire et lancer le conteneur
+docker compose up --build
+
+# Lancer en arrière-plan
+docker compose up --build -d
+
+# Arrêter le conteneur
+docker compose down
+```
+
+L'application est accessible sur : `http://localhost:3000`
+
+---
+
+## Fonctionnalités
+
+### Authentification
+Connexion via OAuth Betaseries. Les routes sont protégées et accessibles uniquement aux utilisateurs connectés.
+
+### Films et séries
+Affichage des contenus disponibles sur Betaseries avec accès aux pages de détail et redirection vers le site Betaseries.
+
+### Recherche
+Barre de recherche permettant de trouver des films et séries par titre.
+
+---
+
+## Stack technique
+
+| Technologie | Version | Usage |
+|---|---|---|
+| Nuxt | 4.1.3 | Framework full-stack |
+| Vue | 3 | Framework UI |
+| Vue Router | 4 | Routing client |
+| Nuxt UI | 4 | Composants UI |
+| Docker | - | Conteneurisation |
+
+---
+
+## Pistes d'amélioration
 
 - Ajouter un profil utilisateur
 - Pouvoir ajouter des films et séries à son profil
 - Gestion des amis
-- Tri des contenus qui n'ont pas tous les champs renseignés (titre, images, etc)
+- Tri des contenus qui n'ont pas tous les champs renseignés (titre, images, etc.)
 
-## Collaborateurs
+---
+
+## Auteurs
 
 - Stefan-Paris Paduraru
 - Léa Ballester
+
+_Projet réalisé dans le cadre de la Web Academy Epitech Marseille — Promo 2026_
