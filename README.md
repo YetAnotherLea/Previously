@@ -112,7 +112,6 @@ Barre de recherche permettant de trouver des films et séries par titre.
 
 ## Pistes d'amélioration
 
-- Ajouter un profil utilisateur
 - Pouvoir ajouter des films et séries à son profil
 - Gestion des amis
 - Tri des contenus qui n'ont pas tous les champs renseignés (titre, images, etc.)
