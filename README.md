@@ -21,8 +21,8 @@ Site de suivi de films et de séries développé dans le cadre d'un projet Epite
 ### 1. Cloner le dépôt
 
 ```bash
-git clone git@github.com:EpitechWebAcademiePromo2026/W-SPE-502-MAR-2-1-previously-lea.ballester.git
-cd W-SPE-502-MAR-2-1-previously-lea.ballester
+git clone git@github.com:YetAnotherLea/Previously.git
+cd Previously
 ```
 
 ### 2. Obtenir une clé API Betaseries
