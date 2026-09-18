@@ -6,7 +6,7 @@
       </button>
 
       <div v-else class="index-main">
-        <img :src="backgroundImage" alt="Background" class="background" />
+        <video src="/cc.webm" autoplay muted loop playsinline class="background" />
       </div>
 
       <h1 v-if="isAuthenticated" class="auth-message"></h1>
@@ -70,7 +70,6 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useAuth } from "../composables/useAuth";
-import backgroundImage from "../../public/cc.gif";
 
 const { startOAuth, logout, isAuthenticated, checkAuthStatus } = useAuth();
 const config = useRuntimeConfig();

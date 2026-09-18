@@ -43,14 +43,14 @@ Créez un fichier `.env` à la racine du projet :
 
 ```dotenv
 NUXT_PUBLIC_BETASERIES_CLIENT_ID=votre_client_id
-BETASERIES_CLIENT_SECRET=votre_client_secret
+NUXT_BETASERIES_CLIENT_SECRET=votre_client_secret
 NUXT_PUBLIC_APP_BASE_URL=http://localhost:3000
 ```
 
 | Variable | Description |
 |---|---|
 | `NUXT_PUBLIC_BETASERIES_CLIENT_ID` | Clé publique fournie par Betaseries |
-| `BETASERIES_CLIENT_SECRET` | Clé secrète fournie par Betaseries |
+| `NUXT_BETASERIES_CLIENT_SECRET` | Clé secrète fournie par Betaseries |
 | `NUXT_PUBLIC_APP_BASE_URL` | URL de base de l'application |
 
 > Ne commitez jamais votre fichier `.env`. Il est listé dans `.gitignore` et `.dockerignore`.

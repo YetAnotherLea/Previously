@@ -1,6 +1,5 @@
 <script setup>
 import { useAuth } from "../composables/useAuth";
-import backgroundImage from "../../public/cc.gif";
 
 const { startOAuth } = useAuth();
 </script>
@@ -8,7 +7,7 @@ const { startOAuth } = useAuth();
 <template>
   <div class="container">
     <div class="index-main">
-      <img :src="backgroundImage" alt="Background" class="background" />
+      <video src="/cc.webm" autoplay muted loop playsinline class="background" />
     </div>
     <div class="login-card">
       <h1>Connexion BetaSeries</h1>

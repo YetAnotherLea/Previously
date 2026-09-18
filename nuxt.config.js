@@ -5,12 +5,12 @@ export default defineNuxtConfig({
   modules: ["@nuxt/ui"],
   devtools: { enabled: true },
   runtimeConfig: {
-    betaseriesClientSecret: process.env.BETASERIES_CLIENT_SECRET,
+    betaseriesClientSecret: process.env.NUXT_BETASERIES_CLIENT_SECRET,
     public: {
       betaseriesClientId: process.env.NUXT_PUBLIC_BETASERIES_CLIENT_ID,
       betaseriesApiBaseUrl: "https://api.betaseries.com",
       betaseriesAuthBaseUrl: "https://www.betaseries.com",
-      APP_BASE_URL: process.env.APP_BASE_URL,
+      APP_BASE_URL: process.env.NUXT_PUBLIC_APP_BASE_URL,
     },
   },
 });
