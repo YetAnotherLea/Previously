@@ -4,7 +4,6 @@ export const useAuth = () => {
   const token = useCookie("betaseries_token");
   const isAuthenticated = ref(!!token.value);
 
-  // FUNCTIE ESENTIALA: Re-citeste cookie-ul setat de server (rezolva problema de UI)
   const checkAuthStatus = () => {
     isAuthenticated.value = !!useCookie("betaseries_token").value;
     if (!isAuthenticated.value) {

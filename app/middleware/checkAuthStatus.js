@@ -1,4 +1,5 @@
-import { useAuth, checkAuthStatus } from "../../composables/useAuth";
+import { useAuth } from "../../composables/useAuth";
+const { checkAuthStatus } = useAuth();
 
 export default defineNuxtRouteMiddleware((to, from) => {
   const { isAuthenticated } = useAuth();

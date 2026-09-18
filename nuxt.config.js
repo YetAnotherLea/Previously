@@ -10,10 +10,7 @@ export default defineNuxtConfig({
       betaseriesClientId: process.env.NUXT_PUBLIC_BETASERIES_CLIENT_ID,
       betaseriesApiBaseUrl: "https://api.betaseries.com",
       betaseriesAuthBaseUrl: "https://www.betaseries.com",
-      APP_BASE_URL:
-        process.env.NODE_ENV === "production"
-          ? "https://adresse-de-lapplication.com"
-          : "http://localhost:3000",
+      APP_BASE_URL: process.env.APP_BASE_URL,
     },
   },
 });
