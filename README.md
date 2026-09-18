@@ -6,6 +6,10 @@
 
 Site de suivi de films et de séries développé dans le cadre d'un projet Epitech Web Academy. Previously permet de parcourir des films et séries, d'effectuer des recherches et d'accéder aux détails des contenus via une interface Nuxt connectée à l'API Betaseries.
 
+**Démo en ligne : [previously.leaballester.com](https://previously.leaballester.com)** — un compte Betaseries est nécessaire pour se connecter.
+
+> Site de démonstration volontairement non indexé (`robots.txt`, en-tête `X-Robots-Tag`).
+
 ---
 
 ## Prérequis
