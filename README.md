@@ -8,8 +8,6 @@ Site de suivi de films et de séries développé dans le cadre d'un projet Epite
 
 **Démo en ligne : [previously.leaballester.com](https://previously.leaballester.com)** — un compte Betaseries est nécessaire pour se connecter.
 
-> Site de démonstration volontairement non indexé (`robots.txt`, en-tête `X-Robots-Tag`).
-
 ---
 
 ## Prérequis
